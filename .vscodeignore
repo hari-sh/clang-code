@@ -1,0 +1,29 @@
+# Ignore dev dependencies
+node_modules/**
+!node_modules/node-gyp-build/**
+
+# Ignore config, build files
+.vscode/
+*.log
+.git/
+.gitignore
+.github/
+npm-debug.log
+tsconfig.json
+jsconfig.json
+build.js
+switch-mode.js
+src/**
+
+# Ignore workflows and release automation
+.vscodeignore
+*.vsix
+package-lock.json
+*.yml
+*.yaml
+
+# Ignore source maps and temp files
+*.map
+*.tmp
+.DS_Store
+*.swp

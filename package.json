@@ -1,0 +1,72 @@
+{
+  "name": "clangd-code",
+  "displayName": "clangd-code",
+  "icon": "clangd.png",
+  "description": "clangd-code is a Visual Studio Code extension that integrates clangd for efficient code navigation and symbol searching within your projects.",
+  "publisher": "harikalyan",
+  "version": "0.2.1",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Language Packs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hari-sh/clangd-code"
+  },
+  "main": "./dist/main.js",
+  "contributes": {
+    "configuration": {
+      "title": "clangd-code configuration",
+      "properties": {
+        "clangd-code.clangdCmd": {
+          "type": "string",
+          "default": "clangd",
+          "description": "Path to the clangd executable"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "extension.storeTags",
+        "title": "Clangd: Store Tags"
+      },
+      {
+        "command": "extension.jumpTag",
+        "title": "Clangd: Go To Definition"
+      },
+      {
+        "command": "extension.searchTags",
+        "title": "Clangd: Search Tags"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.jumpTag",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "bundle": "node build.js",
+    "vscode:prepublish": "node build.js",
+    "package": "vsce package",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "classic-level": "^3.0.0",
+    "fast-glob": "^3.3.3",
+    "node-gyp-build": "^4.8.4",
+    "vscode-jsonrpc": "^9.0.3"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.7.1",
+    "esbuild": "^0.25.5",
+    "node-gyp": "^13.0.2"
+  }
+}
