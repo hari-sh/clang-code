@@ -12,6 +12,7 @@ async function getSourceFiles(dir, root, out = []) {
     for (const e of await fs.readdir(dir, { withFileTypes: true })) {
         const fullPath = path.join(dir, e.name);
         if (e.isDirectory()) {
+            if (['node_modules', '.git', 'dist', 'build', '.cache', 'out'].includes(e.name)) continue;
             await getSourceFiles(fullPath, root, out);
         } else if (exts.has(path.extname(e.name))) {
             out.push(path.relative(root, fullPath));
@@ -22,16 +23,16 @@ async function getSourceFiles(dir, root, out = []) {
 
 
 
-async function runClangd(root, channel, clangdCmd) {
-    channel.appendLine('Indexing symbols with clangd...');
+async function runClang(root, channel, clangCmd) {
+    channel.appendLine('Indexing symbols with clang...');
     const batchSize = 200000;
     const batchWriter = new BatchWriter(batchSize, (processed) => {
         channel.appendLine(`${processed} symbols processed...`);
     });
 
-    await getClangdSymbols(root, clangdCmd, (processed, total) => {
+    await getClangdSymbols(root, clangCmd, (processed, total) => {
         if (processed % 100 === 0 || processed === total) {
-            channel.appendLine(`${processed}/${total} files processed by clangd...`);
+            channel.appendLine(`${processed}/${total} files processed by clang...`);
         }
     }, async (tagName, absFile, lineNo) => {
         if (!tagName || !absFile || isNaN(lineNo)) {
@@ -51,14 +52,14 @@ async function runClangd(root, channel, clangdCmd) {
     });
 
     await batchWriter.flush();
-    channel.appendLine('All symbols indexed with clangd...');
+    channel.appendLine('All symbols indexed with clang...');
 }
 
 async function parseToTagsFile(root, channel, exeCmds) {
     channel.appendLine('Finding Number of files to be indexed...');
     const files = await getSourceFiles(root, root);
     channel.appendLine(`Found ${files.length} source files(s) to index...`);
-    await runClangd(root, channel, exeCmds.clangd);
+    await runClang(root, channel, exeCmds.clang || exeCmds.clangd || 'clang');
 }
 
 async function assignIdsToVariables(channel) {
@@ -140,7 +141,8 @@ if (require.main === module) {
     };
 
     const exeCmds = {
-        clangd: 'clangd'
+        clang: 'clang',
+        clangd: 'clang'
     };
 
     const root = argv[2];

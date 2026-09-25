@@ -9,7 +9,8 @@ const channel = vscode.window.createOutputChannel('clangd-code');
 const config = vscode.workspace.getConfiguration('clangd-code');
 
 const exeCmds = {
-  clangd: config.get('clangdCmd') || 'clangd'
+  clang: config.get('clangCmd') || config.get('clangdCmd') || 'clang',
+  clangd: config.get('clangCmd') || config.get('clangdCmd') || 'clang'
 };
 
 function getVersionAsync(cmd, versionArgs = ["--version"]) {
@@ -19,20 +20,20 @@ function getVersionAsync(cmd, versionArgs = ["--version"]) {
         child.stdout.on("data", d => output += d);
         child.stderr.on("data", d => output += d);
         child.on("error", () => {
-            reject(new Error(`Please install clangd or provide clangd path in settings `));
+            reject(new Error(`Please install clang or provide clang path in settings `));
         });
         child.on("close", (code) => {
             if (code === 0 || code === 1) {
                 resolve(output.trim());
             } else {
-                reject(new Error(`Please install clangd or provide clangd path in settings `));
+                reject(new Error(`Please install clang or provide clang path in settings `));
             }
         });
     });
 }
 
 async function preflight(exeCmds) {
-    await getVersionAsync(exeCmds.clangd);
+    await getVersionAsync(exeCmds.clang);
 }
 
 async function storeTags() {

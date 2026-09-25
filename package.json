@@ -21,10 +21,15 @@
     "configuration": {
       "title": "clangd-code configuration",
       "properties": {
+        "clangd-code.clangCmd": {
+          "type": "string",
+          "default": "clang",
+          "description": "Path to the clang executable"
+        },
         "clangd-code.clangdCmd": {
           "type": "string",
-          "default": "clangd",
-          "description": "Path to the clangd executable"
+          "default": "clang",
+          "description": "Path to the clang executable"
         }
       }
     },
